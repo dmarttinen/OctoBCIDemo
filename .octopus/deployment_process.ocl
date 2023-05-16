@@ -48,6 +48,7 @@ step "deploy-trident-web" {
             Octopus.Action.Package.FeedId = "octopus-server-built-in"
             Octopus.Action.Package.JsonConfigurationVariablesTargets = "appsettings.json"
             Octopus.Action.Package.PackageId = "Trident.Web"
+            Octopus.Action.RunOnServer = "false"
         }
         worker_pool_variable = ""
 
@@ -106,10 +107,12 @@ step "trident-email-notifications" {
 
     action {
         action_type = "Octopus.Email"
+        is_disabled = true
         properties = {
             Octopus.Action.Email.Body = "#{Email Body}"
             Octopus.Action.Email.Subject = "#{Email Subject}"
             Octopus.Action.Email.ToTeamIds = "bci-training"
+            Octopus.Action.RunOnServer = "false"
         }
     }
 }
