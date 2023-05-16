@@ -1,0 +1,115 @@
+step "hello-world" {
+    name = "Hello World"
+    properties = {
+        Octopus.Action.TargetRoles = "trident-web"
+    }
+
+    action {
+        action_type = "Octopus.Script"
+        properties = {
+            Octopus.Action.RunOnServer = "false"
+            Octopus.Action.Script.ScriptBody = "Say-Hello"
+            Octopus.Action.Script.ScriptSource = "Inline"
+            Octopus.Action.Script.Syntax = "PowerShell"
+        }
+        worker_pool_variable = ""
+    }
+}
+
+step "deploy-trident-web" {
+    name = "Deploy Trident Web"
+    properties = {
+        Octopus.Action.MaxParallelism = "1"
+        Octopus.Action.TargetRoles = "trident-web"
+    }
+
+    action "remove-from-load-balancer" {
+        action_type = "Octopus.Script"
+        name = "Remove from Load Balancer"
+        properties = {
+            Octopus.Action.RunOnServer = "false"
+            Octopus.Action.Script.ScriptBody = <<-EOT
+                $machineName = $OctopusParameters["Octopus.Machine.Name"]
+                
+                Write-Host "Remove $machineName from the Load Balancer."
+                EOT
+            Octopus.Action.Script.ScriptSource = "Inline"
+            Octopus.Action.Script.Syntax = "PowerShell"
+        }
+        worker_pool_variable = ""
+    }
+
+    action "deploy-trident-web" {
+        action_type = "Octopus.TentaclePackage"
+        name = "Deploy Trident Web"
+        properties = {
+            Octopus.Action.EnabledFeatures = "Octopus.Features.JsonConfigurationVariables"
+            Octopus.Action.Package.DownloadOnTentacle = "False"
+            Octopus.Action.Package.FeedId = "octopus-server-built-in"
+            Octopus.Action.Package.JsonConfigurationVariablesTargets = "appsettings.json"
+            Octopus.Action.Package.PackageId = "Trident.Web"
+        }
+        worker_pool_variable = ""
+
+        packages {
+            acquisition_location = "Server"
+            feed = "octopus-server-built-in"
+            package_id = "Trident.Web"
+            properties = {
+                SelectionMode = "immediate"
+            }
+        }
+    }
+
+    action "add-to-load-balancer" {
+        action_type = "Octopus.Script"
+        name = "Add to Load Balancer"
+        properties = {
+            Octopus.Action.RunOnServer = "false"
+            Octopus.Action.Script.ScriptBody = <<-EOT
+                $machineName = $OctopusParameters["Octopus.Machine.Name"]
+                
+                Write-Host "Add $machineName to the Load Balancer."
+                EOT
+            Octopus.Action.Script.ScriptSource = "Inline"
+            Octopus.Action.Script.Syntax = "PowerShell"
+        }
+        worker_pool_variable = ""
+    }
+}
+
+step "trident-notifications" {
+    name = "Trident Notifications"
+    properties = {
+        Octopus.Action.TargetRoles = "trident-web"
+    }
+
+    action {
+        properties = {
+            Body = "#{Notification.Body.Text}"
+            HookUrl = "#{Notification.Teams.Webhook}"
+            Octopus.Action.RunOnServer = "false"
+            Octopus.Action.Template.Id = "ActionTemplates-221"
+            Octopus.Action.Template.Version = "22"
+            TeamsPostMessage.RetryCount = "1"
+            TeamsPostMessage.RetryDelay = "100"
+            TeamsPostMessage.RetryPosting = "False"
+            Timeout = "60"
+            Title = "#{Notification.Subject.Text}"
+        }
+        worker_pool_variable = ""
+    }
+}
+
+step "trident-email-notifications" {
+    name = "Trident Email Notifications"
+
+    action {
+        action_type = "Octopus.Email"
+        properties = {
+            Octopus.Action.Email.Body = "#{Email Body}"
+            Octopus.Action.Email.Subject = "#{Email Subject}"
+            Octopus.Action.Email.ToTeamIds = "bci-training"
+        }
+    }
+}

@@ -1,0 +1,37 @@
+variable "ConnectionStrings:Database" {
+    value "Server=#{Project.Database.Server.Name};Database=#{Project.Database.Name};User ID=#{Project.Database.User.Name};Password=#{Project.Database.User.Password};" {}
+}
+
+variable "Email Body" {
+    value "You can view the the deployment here: #{Octopus.Web.ServerUri}/app#/#{Octopus.Space.Id}/tasks/#{Octopus.Task.Id}" {}
+}
+
+variable "Email Subject" {
+    value "#{Octopus.Project.Name} #{Octopus.Release.Number} to #{Octopus.Environment.Name} has #{if Octopus.Deployment.Error}failed#{else}completed successfully#{/if}" {}
+}
+
+variable "Name" {
+    value "Mark" {}
+}
+
+variable "Project.Database.Name" {
+    value "Trident" {}
+}
+
+variable "Project.Database.Server.Name" {
+    value "Trident_Dev" {
+        environment = ["dale-dev"]
+    }
+
+    value "Trident_QA" {
+        environment = ["dale-qa"]
+    }
+
+    value "Trident_Staging" {
+        environment = ["dale-staging"]
+    }
+
+    value "Trident_Prod" {
+        environment = ["dale-production"]
+    }
+}
