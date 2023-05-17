@@ -8,7 +8,11 @@ step "hello-world" {
         action_type = "Octopus.Script"
         properties = {
             Octopus.Action.RunOnServer = "false"
-            Octopus.Action.Script.ScriptBody = "Say-Hello"
+            Octopus.Action.Script.ScriptBody = <<-EOT
+                Say-Hello
+                
+                Exit 1
+                EOT
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "PowerShell"
         }
