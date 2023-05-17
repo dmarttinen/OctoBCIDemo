@@ -16,6 +16,24 @@ step "hello-world" {
     }
 }
 
+step "hello-world-3" {
+    name = "Hello World 3"
+    properties = {
+        Octopus.Action.TargetRoles = "trident-web"
+    }
+
+    action {
+        action_type = "Octopus.Script"
+        properties = {
+            Octopus.Action.RunOnServer = "false"
+            Octopus.Action.Script.ScriptBody = "Say-Hello"
+            Octopus.Action.Script.ScriptSource = "Inline"
+            Octopus.Action.Script.Syntax = "PowerShell"
+        }
+        worker_pool_variable = ""
+    }
+}
+
 step "deploy-trident-web" {
     name = "Deploy Trident Web"
     properties = {
