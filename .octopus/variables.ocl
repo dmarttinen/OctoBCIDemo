@@ -11,7 +11,7 @@ variable "Email Subject" {
 }
 
 variable "Name" {
-    value "Dale" {}
+    value "Shawn" {}
 }
 
 variable "Project.Database.Name" {
