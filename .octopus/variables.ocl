@@ -27,8 +27,19 @@ variable "Project.Database.Name" {
         environment = ["dale-production"]
     }
 
-    value "Trident_#{Octopus.Environment.Name}" {
+    value "Trident_Dev" {
         description = ""
+        environment = ["dale-dev"]
+    }
+
+    value "Trident_QA" {
+        description = ""
+        environment = ["dale-qa"]
+    }
+
+    value "Trident_Staging" {
+        description = ""
+        environment = ["dale-staging"]
     }
 }
 
