@@ -48,3 +48,7 @@ variable "Project.Database.Server.Name" {
 variable "Project.Connection.String" {
     value "Server=#{Project.Database.Server.Name};Integrated Security=false;Database=#{Project.Database.Name}" {}
 }
+
+variable "database-exists" {
+    value "True" {}
+}
