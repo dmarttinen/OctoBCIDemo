@@ -1,5 +1,9 @@
 step "run-octopus-deploy-runbook" {
+    condition = "Variable"
     name = "Run Octopus Deploy Runbook"
+    properties = {
+        Octopus.Step.ConditionVariableExpression = "#{if DatbaseExists == \"True\"}true#{/if}"
+    }
 
     action {
         properties = {
