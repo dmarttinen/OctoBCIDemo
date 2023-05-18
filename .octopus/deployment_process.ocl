@@ -127,14 +127,14 @@ step "trident-email-notifications" {
     }
 }
 
-step "custom-hello-world" {
-    name = "Custom Hello World"
+step "hello-world-custom" {
+    name = "Hello World Custom"
 
     action {
         properties = {
-            custom-name = "Dale custom"
-            Octopus.Action.Template.Id = "ActionTemplates-264"
-            Octopus.Action.Template.Version = "3"
+            custom-name = "Mike"
+            Octopus.Action.Template.Id = "ActionTemplates-265"
+            Octopus.Action.Template.Version = "0"
         }
         worker_pool = "hosted-windows"
     }
