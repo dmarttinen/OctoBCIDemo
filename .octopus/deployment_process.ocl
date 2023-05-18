@@ -133,7 +133,7 @@ step "custom-hello-world" {
     action {
         properties = {
             Octopus.Action.Template.Id = "ActionTemplates-264"
-            Octopus.Action.Template.Version = "1"
+            Octopus.Action.Template.Version = "3"
         }
         worker_pool = "hosted-windows"
     }
