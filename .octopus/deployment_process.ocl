@@ -1,12 +1,8 @@
 step "run-octopus-deploy-runbook" {
     name = "Run Octopus Deploy Runbook"
-    properties = {
-        Octopus.Action.TargetRoles = "trident-web"
-    }
 
     action {
         properties = {
-            Octopus.Action.RunOnServer = "false"
             Octopus.Action.Template.Id = "ActionTemplates-263"
             Octopus.Action.Template.Version = "14"
             Run.Runbook.Api.Key = "#{RunbookAPIKey}"
@@ -22,7 +18,7 @@ step "run-octopus-deploy-runbook" {
             Run.Runbook.UsePublishedSnapShot = "True"
             Run.Runbook.Waitforfinish = "True"
         }
-        worker_pool_variable = ""
+        worker_pool = "hosted-windows"
     }
 }
 
