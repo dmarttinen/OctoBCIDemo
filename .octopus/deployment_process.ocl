@@ -134,7 +134,7 @@ step "custom-hello-world" {
         properties = {
             custom-name = "Custom-Dale"
             Octopus.Action.Template.Id = "ActionTemplates-264"
-            Octopus.Action.Template.Version = "0"
+            Octopus.Action.Template.Version = "1"
         }
         worker_pool = "hosted-windows"
     }
