@@ -139,3 +139,17 @@ step "hello-world-custom" {
         worker_pool = "hosted-windows"
     }
 }
+
+step "hello-world" {
+    name = "Hello World"
+
+    action {
+        action_type = "Octopus.Script"
+        properties = {
+            Octopus.Action.Script.ScriptBody = "Write-Host \"Here's the custom name we recieved from earlier: $customname\""
+            Octopus.Action.Script.ScriptSource = "Inline"
+            Octopus.Action.Script.Syntax = "PowerShell"
+        }
+        worker_pool = "hosted-windows"
+    }
+}
