@@ -26,6 +26,35 @@ step "run-octopus-deploy-runbook" {
     }
 }
 
+step "deploy-database" {
+    name = "Deploy Database"
+    properties = {
+        Octopus.Action.TargetRoles = "trident-web"
+    }
+
+    action {
+        action_type = "Octopus.TentaclePackage"
+        properties = {
+            Octopus.Action.EnabledFeatures = ",Octopus.Features.ConfigurationTransforms,Octopus.Features.ConfigurationVariables"
+            Octopus.Action.Package.AutomaticallyRunConfigurationTransformationFiles = "True"
+            Octopus.Action.Package.AutomaticallyUpdateAppSettingsAndConnectionStrings = "True"
+            Octopus.Action.Package.DownloadOnTentacle = "False"
+            Octopus.Action.Package.FeedId = "octopus-server-built-in"
+            Octopus.Action.Package.PackageId = "Trident.Database"
+        }
+        worker_pool_variable = ""
+
+        packages {
+            acquisition_location = "Server"
+            feed = "octopus-server-built-in"
+            package_id = "Trident.Database"
+            properties = {
+                SelectionMode = "immediate"
+            }
+        }
+    }
+}
+
 step "generate-database-delta-report" {
     name = "Generate Database Delta Report"
 
@@ -92,6 +121,7 @@ step "approve-database-delta-script" {
             Octopus.Action.Manual.BlockConcurrentDeployments = "False"
             Octopus.Action.Manual.Instructions = "Please approve the database delta script found in the artifacts section"
             Octopus.Action.Manual.ResponsibleTeamIds = "bci-training"
+            Octopus.Action.RunOnServer = "false"
         }
     }
 }
