@@ -42,7 +42,7 @@ step "run-octopus-deploy-runbook" {
     condition = "Variable"
     name = "Run Octopus Deploy Runbook"
     properties = {
-        Octopus.Step.ConditionVariableExpression = "#{if database-exists != \"True\"}true#{/if}"
+        Octopus.Step.ConditionVariableExpression = "#{unless Octopus.Deployment.Error}#{Octopus.Action[Calculate Deployment Mode].Output.RunOnDeploy}#{/unless}."
     }
 
     action {
