@@ -132,7 +132,6 @@ step "custom-hello-world" {
 
     action {
         properties = {
-            custom-name = "Custom-Dale"
             Octopus.Action.Template.Id = "ActionTemplates-264"
             Octopus.Action.Template.Version = "1"
         }
