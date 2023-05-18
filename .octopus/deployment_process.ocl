@@ -1,3 +1,30 @@
+step "hello-world-custom" {
+    name = "Hello World Custom"
+
+    action {
+        properties = {
+            custom-name = "Mike"
+            Octopus.Action.Template.Id = "ActionTemplates-264"
+            Octopus.Action.Template.Version = "4"
+        }
+        worker_pool = "hosted-windows"
+    }
+}
+
+step "hello-world" {
+    name = "Hello World"
+
+    action {
+        action_type = "Octopus.Script"
+        properties = {
+            Octopus.Action.Script.ScriptBody = "Write-Host \"Here's the custom name we recieved from earlier: $customname\""
+            Octopus.Action.Script.ScriptSource = "Inline"
+            Octopus.Action.Script.Syntax = "PowerShell"
+        }
+        worker_pool = "hosted-windows"
+    }
+}
+
 step "run-octopus-deploy-runbook" {
     condition = "Variable"
     name = "Run Octopus Deploy Runbook"
@@ -124,32 +151,5 @@ step "trident-email-notifications" {
             Octopus.Action.Email.ToTeamIds = "bci-training"
             Octopus.Action.RunOnServer = "false"
         }
-    }
-}
-
-step "hello-world-custom" {
-    name = "Hello World Custom"
-
-    action {
-        properties = {
-            custom-name = "Mike"
-            Octopus.Action.Template.Id = "ActionTemplates-265"
-            Octopus.Action.Template.Version = "0"
-        }
-        worker_pool = "hosted-windows"
-    }
-}
-
-step "hello-world" {
-    name = "Hello World"
-
-    action {
-        action_type = "Octopus.Script"
-        properties = {
-            Octopus.Action.Script.ScriptBody = "Write-Host \"Here's the custom name we recieved from earlier: $customname\""
-            Octopus.Action.Script.ScriptSource = "Inline"
-            Octopus.Action.Script.Syntax = "PowerShell"
-        }
-        worker_pool = "hosted-windows"
     }
 }
