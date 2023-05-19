@@ -73,6 +73,7 @@ step "deploy-trident-web" {
 
     action "remove-from-load-balancer" {
         action_type = "Octopus.Script"
+        is_disabled = true
         name = "Remove from Load Balancer"
         properties = {
             Octopus.Action.RunOnServer = "false"
@@ -112,6 +113,7 @@ step "deploy-trident-web" {
 
     action "add-to-load-balancer" {
         action_type = "Octopus.Script"
+        is_disabled = true
         name = "Add to Load Balancer"
         properties = {
             Octopus.Action.RunOnServer = "false"
