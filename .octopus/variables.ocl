@@ -37,3 +37,7 @@ variable "Project.Database.Server.Name" {
         description = ""
     }
 }
+
+variable "database-exists" {
+    value "True" {}
+}
