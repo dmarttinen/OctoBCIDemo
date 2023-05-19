@@ -1,7 +1,9 @@
 step "run-octopus-deploy-runbook" {
+    condition = "Variable"
     name = "Run Octopus Deploy Runbook"
     properties = {
         Octopus.Action.TargetRoles = "trident-web"
+        Octopus.Step.ConditionVariableExpression = "#{if database-exists != \"True\"}true#{/if}"
     }
 
     action {
