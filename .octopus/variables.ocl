@@ -6,10 +6,6 @@ variable "Email Subject" {
     value "#{Octopus.Project.Name} #{Octopus.Release.Number} to #{Octopus.Environment.Name} has #{if Octopus.Deployment.Error}failed#{else}completed successfully#{/if}" {}
 }
 
-variable "Name" {
-    value "Mark" {}
-}
-
 variable "Project.Database.Report.Path" {
     value "C:\\DatabaseReports\\#{Octopus.Environment.Name}" {}
 }
@@ -61,6 +57,18 @@ variable "Project.Loadbalancer.Percent" {
         prompt {
             description = ""
             label = ""
+        }
+    }
+}
+
+variable "Name" {
+    value "Mark" {
+        prompt {
+            description = "Name to use in Hello world script"
+            display_settings = {
+                Octopus.ControlType = "SingleLineText"
+            }
+            label = "Hello World Name"
         }
     }
 }
