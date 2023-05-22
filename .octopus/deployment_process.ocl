@@ -73,14 +73,12 @@ step "deploy-trident-web" {
 
     action "remove-from-load-balancer" {
         action_type = "Octopus.Script"
-        is_disabled = true
         name = "Remove from Load Balancer"
         properties = {
             Octopus.Action.RunOnServer = "false"
             Octopus.Action.Script.ScriptBody = <<-EOT
-                $machineName = $OctopusParameters["Octopus.Machine.Name"]
-                
-                Write-Host "Remove $machineName from the Load Balancer."
+                $currentEnvironment = $OctopusParameters["Octopus.Environment.Name"]
+                Write-Highlight "Updating load balancer to point to $currentEnvironment"
                 EOT
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "PowerShell"
@@ -113,7 +111,6 @@ step "deploy-trident-web" {
 
     action "add-to-load-balancer" {
         action_type = "Octopus.Script"
-        is_disabled = true
         name = "Add to Load Balancer"
         properties = {
             Octopus.Action.RunOnServer = "false"
