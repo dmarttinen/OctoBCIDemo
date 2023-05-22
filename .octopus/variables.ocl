@@ -41,3 +41,26 @@ variable "Project.Database.Server.Name" {
 variable "database-exists" {
     value "True" {}
 }
+
+variable "Project.Loadbalancer.WaitInMinutes" {
+    value "10" {
+        environment = ["staging-blue", "staging-green", "production-blue", "production-green"]
+        process = ["deployment-process", "runbook/update-load-balancer"]
+
+        prompt {
+            description = ""
+            label = ""
+        }
+    }
+}
+
+variable "Project.Loadbalancer.Percent" {
+    value "10" {
+        environment = ["staging-blue", "staging-green", "production-blue", "production-green"]
+
+        prompt {
+            description = ""
+            label = ""
+        }
+    }
+}
