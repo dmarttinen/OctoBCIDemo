@@ -71,19 +71,32 @@ step "deploy-trident-web" {
         Octopus.Action.TargetRoles = "trident-web"
     }
 
-    action "remove-from-load-balancer" {
-        action_type = "Octopus.Script"
-        name = "Remove from Load Balancer"
+    action "run-update-load-balancer" {
+        name = "Run Update Load Balancer"
         properties = {
-            Octopus.Action.RunOnServer = "false"
-            Octopus.Action.Script.ScriptBody = <<-EOT
-                $currentEnvironment = $OctopusParameters["Octopus.Environment.Name"]
-                Write-Highlight "Updating load balancer to point to $currentEnvironment"
+            Octopus.Action.Template.Id = "ActionTemplates-263"
+            Octopus.Action.Template.Version = "14"
+            Run.Runbook.Api.Key = "#{RunbookAPIKey}"
+            Run.Runbook.AutoApproveManualInterventions = "No"
+            Run.Runbook.Base.Url = "#{Octopus.Web.ServerUri}"
+            Run.Runbook.CancelInSeconds = "1800"
+            Run.Runbook.DateTime = "N/A"
+            Run.Runbook.Environment.Name = "#{Octopus.Environment.Name}"
+            Run.Runbook.Machines = "N/A"
+            Run.Runbook.ManualIntervention.EnvironmentToUse = "#{Octopus.Environment.Name}"
+            Run.Runbook.Name = "Update Load Balancer"
+            Run.Runbook.Project.Name = "#{Octopus.Project.Name}"
+            Run.Runbook.PromptedVariables = <<-EOT
+                Project.Loadbalancer.Percent::#{Project.Loadbalancer.Percent}
+                Project.Loadbalancer.WaitInMinutes::#{Project.Loadbalancer.WaitInMinutes}
+                Project.Loadbalancer.HostToUpdate::#{Project.Tenant.Loadbalancer.HostName}
+                
                 EOT
-            Octopus.Action.Script.ScriptSource = "Inline"
-            Octopus.Action.Script.Syntax = "PowerShell"
+            Run.Runbook.Space.Name = "#{Octopus.Space.Name}"
+            Run.Runbook.UsePublishedSnapShot = "True"
+            Run.Runbook.Waitforfinish = "True"
         }
-        worker_pool_variable = ""
+        worker_pool = "hosted-windows"
     }
 
     action "deploy-trident-web" {
