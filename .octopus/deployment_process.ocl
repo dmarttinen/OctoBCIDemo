@@ -8,7 +8,7 @@ step "run-api-script" {
                 $ErrorActionPreference = "Stop";
                 
                 # Define working variables
-                $octopusURL = "https://clearmeasure.octopus.app/"
+                $octopusURL = $OctopusParameters["Octopus.Web.BaseUrl"]
                 $octopusAPIKey = $RunbookAPIKey
                 $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
                 $spaceName = $OctopusParameters["Octopus.Space.Name"]
