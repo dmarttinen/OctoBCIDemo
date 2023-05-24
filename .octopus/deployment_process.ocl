@@ -19,6 +19,7 @@ step "run-api-script" {
                 
                 # Get projects for space
                 $projectList = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/all" -Headers $header
+                Write-Host "Project list: $projectlist"
                 
                 # Loop through projects
                 foreach ($project in $projectList) {
