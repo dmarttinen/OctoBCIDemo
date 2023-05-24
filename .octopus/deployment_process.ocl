@@ -1,3 +1,59 @@
+step "run-api-script" {
+    name = "Run api script"
+
+    action {
+        action_type = "Octopus.Script"
+        properties = {
+            Octopus.Action.Script.ScriptBody = <<-EOT
+                $ErrorActionPreference = "Stop";
+                
+                # Define working variables
+                $octopusURL = "https://clearmeasure.octopus.app/"
+                $octopusAPIKey = $RunbookAPIKey
+                $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
+                $spaceName = $OctopusParameters["Octopus.Space.Name"]
+                $packageId = "Trident.Web"
+                
+                # Get space
+                $space = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Headers $header) | Where-Object { $_.Name -eq $spaceName }
+                
+                # Get projects for space
+                $projectList = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/all" -Headers $header
+                
+                # Loop through projects
+                foreach ($project in $projectList) {
+                    
+                    $deploymentProcessLink = $project.Links.DeploymentProcess
+                    
+                    # Check if project is Config-as-Code
+                    if ($project.IsVersionControlled) {
+                        # Get default Git branch for Config-as-Code project
+                        $defaultBranch = $project.PersistenceSettings.DefaultBranch
+                        $deploymentProcessLink = $deploymentProcessUri -Replace "{gitRef}", $defaultBranch
+                    }
+                
+                    $deploymentProcess = Invoke-RestMethod -Method Get -Uri "$octopusURL$deploymentProcessLink" -Headers $header
+                
+                    # Get steps and check step for specified package
+                    foreach ($step in $deploymentProcess.Steps) {
+                        $packages = $step.Actions.Packages
+                        if ($null -ne $packages) {
+                            $packageIds = $packages | Where-Object { $_.PackageId -eq $packageId }
+                            if ($packageIds.Count -gt 0) {
+                                Write-Host "Step: $($step.Name) of project: $($project.Name) is using package '$packageId'."
+                            }
+                        }
+                    }
+                }
+                
+                EOT
+            Octopus.Action.Script.ScriptSource = "Inline"
+            Octopus.Action.Script.Syntax = "PowerShell"
+        }
+        worker_pool = "hosted-windows"
+    }
+}
+
 step "run-octopus-deploy-runbook" {
     condition = "Variable"
     name = "Run Octopus Deploy Runbook"
@@ -174,61 +230,5 @@ step "trident-email-notifications" {
             Octopus.Action.Email.ToTeamIds = "bci-training"
             Octopus.Action.RunOnServer = "false"
         }
-    }
-}
-
-step "run-api-script" {
-    name = "Run api script"
-
-    action {
-        action_type = "Octopus.Script"
-        properties = {
-            Octopus.Action.Script.ScriptBody = <<-EOT
-                $ErrorActionPreference = "Stop";
-                
-                # Define working variables
-                $octopusURL = "https://clearmeasure.octopus.app/"
-                $octopusAPIKey = $RunbookAPIKey
-                $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
-                $spaceName = $OctopusParameters["Octopus.Space.Name"]
-                $packageId = "Trident.Web"
-                
-                # Get space
-                $space = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Headers $header) | Where-Object { $_.Name -eq $spaceName }
-                
-                # Get projects for space
-                $projectList = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/all" -Headers $header
-                
-                # Loop through projects
-                foreach ($project in $projectList) {
-                    
-                    $deploymentProcessLink = $project.Links.DeploymentProcess
-                    
-                    # Check if project is Config-as-Code
-                    if ($project.IsVersionControlled) {
-                        # Get default Git branch for Config-as-Code project
-                        $defaultBranch = $project.PersistenceSettings.DefaultBranch
-                        $deploymentProcessLink = $deploymentProcessUri -Replace "{gitRef}", $defaultBranch
-                    }
-                
-                    $deploymentProcess = Invoke-RestMethod -Method Get -Uri "$octopusURL$deploymentProcessLink" -Headers $header
-                
-                    # Get steps and check step for specified package
-                    foreach ($step in $deploymentProcess.Steps) {
-                        $packages = $step.Actions.Packages
-                        if ($null -ne $packages) {
-                            $packageIds = $packages | Where-Object { $_.PackageId -eq $packageId }
-                            if ($packageIds.Count -gt 0) {
-                                Write-Host "Step: $($step.Name) of project: $($project.Name) is using package '$packageId'."
-                            }
-                        }
-                    }
-                }
-                
-                EOT
-            Octopus.Action.Script.ScriptSource = "Inline"
-            Octopus.Action.Script.Syntax = "PowerShell"
-        }
-        worker_pool = "hosted-windows"
     }
 }
