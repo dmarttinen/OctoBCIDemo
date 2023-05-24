@@ -188,9 +188,9 @@ step "run-api-script" {
                 
                 # Define working variables
                 $octopusURL = "https://clearmeasure.octopus.app/"
-                $octopusAPIKey = "API-RYJDJANQN1VZZWSIWL8377BVZ92LYISM"
+                $octopusAPIKey = $RunbookAPIKey
                 $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
-                $spaceName = "BCI Training"
+                $spaceName = $OctopusParameters["Octopus.Space.Name"]
                 $packageId = "Trident.Web"
                 
                 # Get space
