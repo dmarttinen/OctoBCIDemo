@@ -1,3 +1,19 @@
+step "create-azure-resources-rg" {
+    name = "Create Azure Resources - RG"
+
+    action {
+        properties = {
+            CreateResourceGroup.AzureAccount = "#{AzureAccount}"
+            CreateResourceGroup.Location = "southcentralus"
+            CreateResourceGroup.ResourceGroupName = "Dale-Octo-Demo"
+            Octopus.Action.RunOnServer = "false"
+            Octopus.Action.Template.Id = "ActionTemplates-283"
+            Octopus.Action.Template.Version = "28"
+        }
+        worker_pool_variable = ""
+    }
+}
+
 step "run-octopus-deploy-runbook" {
     condition = "Variable"
     name = "Run Octopus Deploy Runbook"
@@ -174,19 +190,5 @@ step "trident-email-notifications" {
             Octopus.Action.Email.ToTeamIds = "bci-training"
             Octopus.Action.RunOnServer = "false"
         }
-    }
-}
-
-step "create-azure-resources-rg" {
-    name = "Create Azure Resources - RG"
-
-    action {
-        properties = {
-            CreateResourceGroup.Location = "southcentralus"
-            CreateResourceGroup.ResourceGroupName = "Dale-Octo-Demo"
-            Octopus.Action.Template.Id = "ActionTemplates-283"
-            Octopus.Action.Template.Version = "28"
-        }
-        worker_pool_variable = ""
     }
 }
