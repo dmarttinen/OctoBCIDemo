@@ -176,3 +176,17 @@ step "trident-email-notifications" {
         }
     }
 }
+
+step "create-azure-resources-rg" {
+    name = "Create Azure Resources - RG"
+
+    action {
+        properties = {
+            CreateResourceGroup.Location = "southcentralus"
+            CreateResourceGroup.ResourceGroupName = "Dale-Octo-Demo"
+            Octopus.Action.Template.Id = "ActionTemplates-283"
+            Octopus.Action.Template.Version = "28"
+        }
+        worker_pool_variable = ""
+    }
+}
