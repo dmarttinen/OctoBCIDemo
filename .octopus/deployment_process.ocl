@@ -23,17 +23,17 @@ step "run-api-script" {
                 
                 # Loop through projects
                 foreach ($project in $projectList) {
-                    Write-Host "Checking $project"
                     $deploymentProcessLink = $project.Links.DeploymentProcess
                     
                     # Check if project is Config-as-Code
                     if ($project.IsVersionControlled) {
                         # Get default Git branch for Config-as-Code project
                         $defaultBranch = $project.PersistenceSettings.DefaultBranch
-                        $deploymentProcessLink = $deploymentProcessUri -Replace "{gitRef}", $defaultBranch
+                        $deploymentProcessLink = $deploymentProcessLink -Replace "{gitRef}", $defaultBranch
                     }
                 
                     $deploymentProcess = Invoke-RestMethod -Method Get -Uri "$octopusURL$deploymentProcessLink" -Headers $header
+                    Write-Host $deploymentProcess
                 
                     # Get steps and check step for specified package
                     foreach ($step in $deploymentProcess.Steps) {
