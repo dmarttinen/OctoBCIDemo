@@ -72,3 +72,9 @@ variable "Name" {
         }
     }
 }
+
+variable "AzureAccount" {
+    type = "AzureAccount"
+
+    value "dale-demo" {}
+}
